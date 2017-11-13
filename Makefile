@@ -32,7 +32,9 @@ bin/version.h: VERSION.full
 bin/version.sh: VERSION.full
 	echo "version () { echo 1>&2 '$$(cat $<)'; }" > $@
 
-# Yes, this is bonkers.
+# Yes, this is bonkers. We keep it around even though normal "git archive" or
+# the zip files on Github work to provide an easy way to create a
+# self-contained tarball with embedded Bats.
 .PHONY: export
 export: VERSION.full
 	git diff-index --quiet HEAD  # only export if WD is clean

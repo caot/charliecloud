@@ -1,19 +1,26 @@
 #!/bin/bash
 
-# Warning: This script messes with your "docker" binary. Don't run it unless
-# you know what you are doing.
+# Warning: This script installs software and messes with your "docker" binary.
+# Don't run it unless you know what you are doing.
 
 set -e
 set -x
 
-echo "INSTALL=$INSTALL EXPORT=$EXPORT SETUID=$SETUID"
+echo "SETUID=$SETUID TARBALL=$TARBALL INSTALL=$INSTALL"
 
-if [[ $EXPORT ]]; then
-    make export
-    tar xf charliecloud-*.tar.gz
-    rm charliecloud-*.tar.gz
-    cd charliecloud-*
-fi
+case $TARBALL in
+    export)
+        make export
+        tar xf charliecloud-*.tar.gz
+        cd charliecloud-*
+        ;;
+    archive)
+        sudo apt-get install bats
+        git archive HEAD --prefix=charliecloud/ -o charliecloud.tar
+        tar xf charliecloud.tar
+        cd charliecloud
+        ;;
+esac
 
 # We start in the Charliecloud Git working directory, so no cd needed.
 make SETUID=$SETUID
